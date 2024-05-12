@@ -47,7 +47,7 @@ import type {baseResponseDTO} from "@/models/dto/customDTO";
  */
 async function authLoginApi(user: string, password: string): Promise<baseResponseDTO<userLoginDTO>> {
     let returnData = {} as baseResponseDTO<userLoginDTO>;
-    axios({
+    await axios({
         method: 'post',
         url: apiURL + "/api/v1/auth/login",
         data: {
@@ -58,12 +58,13 @@ async function authLoginApi(user: string, password: string): Promise<baseRespons
             'Authorization': getAuthorization()
         }
     }).then((response) => {
+        console.debug("[API] 执行接口 authLoginApi", response);
         returnData = response.data;
     }).catch((error) => {
         console.warn("[API] 执行接口 authLoginApi 出现错误", error);
         returnData = error.response.data;
     }).finally(() => {
-        console.debug("[API] 执行接口 authLoginApi", returnData);
+        console.debug("[API] 接口请求数据返回结果", returnData);
     })
     return returnData;
 }

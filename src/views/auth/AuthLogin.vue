@@ -52,10 +52,12 @@ async function formUserLogin() {
   // 操作数据进行请求
   const getData = await authLoginApi(userLoginVO.value.user, userLoginVO.value.password);
   if (getData.output === "Success") {
-    message.success('登录成功。');
+    message.success(getData.message);
+    localStorage.setItem('uuid', getData.data.uuid);
+    localStorage.setItem('token', getData.data.token);
     await router.push({name: 'ConsoleHome', replace: true});
   } else {
-    message.warn(getData.message);
+    message.warn(getData.errorMessage);
   }
 }
 </script>
@@ -65,7 +67,7 @@ async function formUserLogin() {
     <h3 class="text-lg font-bold text-gray-900 sm:text-xl lg:text-4xl">
       SecuriVault
     </h3>
-    <p class="mt-1 text-xs lg:text-xl font-medium text-gray-600">授权登录 {{userLoginVO.user}}</p>
+    <p class="mt-1 text-xs lg:text-xl font-medium text-gray-600">授权登录</p>
   </div>
 
   <form class="mt-6 grid gap-3 sm:gap-6" @submit.prevent="formUserLogin">
