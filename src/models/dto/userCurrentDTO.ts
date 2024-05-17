@@ -32,46 +32,9 @@
  * *******************************************************************************
  */
 
-import {createRouter, createWebHistory} from 'vue-router'
-
-const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
-        {
-            path: '/',
-            name: 'index',
-            component: () => import("@/views/BaseAuth.vue")
-        },
-        {
-            path: '/auth',
-            name: 'BaseAuth',
-            component: () => import("@/views/BaseAuth.vue"),
-            children: [
-                {
-                    path: 'login',
-                    name: 'AuthLogin',
-                    component: () => import("@/views/auth/AuthLogin.vue")
-                },
-                {
-                    path: 'biometric',
-                    name: 'AuthBiometricLogin',
-                    component: () => import("@/views/auth/AuthBiometricLogin.vue")
-                }
-            ]
-        },
-        {
-            path: '/dashboard',
-            name: 'BaseDashboard',
-            component: () => import("@/views/BaseDashboard.vue"),
-            children: [
-                {
-                    path: 'home',
-                    name: 'DashboardHome',
-                    component: () => import("@/views/dashboard/DashHome.vue")
-                }
-            ]
-        }
-    ]
-})
-
-export default router
+export type userCurrentDTO = {
+    uuid: string;
+    username: string;
+    email: string;
+    phone: string;
+}

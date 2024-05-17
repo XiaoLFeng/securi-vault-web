@@ -32,38 +32,8 @@
   - ********************************************************************************
   -->
 
-<script lang="ts" setup>
-import {message} from "ant-design-vue";
-import type {userLoginEntity} from "@/models/entity/auth";
-import {onMounted, ref} from "vue";
-import {authLoginApi} from "@/apis/auth-api";
-import router from "@/route";
+<script setup lang="ts">
 
-const userLoginVO = ref({} as userLoginEntity);
-
-/**
- * 用户登录表单处理
- */
-async function formUserLogin() {
-  if (userLoginVO.value.user === "" || userLoginVO.value.password === "") {
-    message.warn('用户名和密码不能为空。');
-    return;
-  }
-  // 操作数据进行请求
-  const getData = await authLoginApi(userLoginVO.value.user, userLoginVO.value.password);
-  if (getData.output === "Success") {
-    message.success(getData.message);
-    localStorage.setItem('uuid', getData.data.uuid);
-    localStorage.setItem('token', getData.data.token);
-    await router.push({name: 'DashboardHome', replace: true});
-  } else {
-    message.warn(getData.errorMessage);
-  }
-}
-
-onMounted(async () => {
-  // 检查用户是否已登录
-})
 </script>
 
 <template>

@@ -55,7 +55,7 @@ async function authLoginApi(user: string, password: string): Promise<baseRespons
             password: password
         },
         headers: {
-            'Authorization': getAuthorization()
+            "Authorization": getAuthorization(),
         }
     }).then((response) => {
         console.debug("[API] 执行接口 authLoginApi", response);

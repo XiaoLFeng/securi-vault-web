@@ -32,46 +32,30 @@
  * *******************************************************************************
  */
 
-import {createRouter, createWebHistory} from 'vue-router'
+import type {baseResponseDTO} from "@/models/dto/customDTO";
+import type {userCurrentDTO} from "@/models/dto/userCurrentDTO";
+import axios from "axios";
+import {apiURL, getAuthorization} from "@/apis/api-link";
 
-const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
-        {
-            path: '/',
-            name: 'index',
-            component: () => import("@/views/BaseAuth.vue")
-        },
-        {
-            path: '/auth',
-            name: 'BaseAuth',
-            component: () => import("@/views/BaseAuth.vue"),
-            children: [
-                {
-                    path: 'login',
-                    name: 'AuthLogin',
-                    component: () => import("@/views/auth/AuthLogin.vue")
-                },
-                {
-                    path: 'biometric',
-                    name: 'AuthBiometricLogin',
-                    component: () => import("@/views/auth/AuthBiometricLogin.vue")
-                }
-            ]
-        },
-        {
-            path: '/dashboard',
-            name: 'BaseDashboard',
-            component: () => import("@/views/BaseDashboard.vue"),
-            children: [
-                {
-                    path: 'home',
-                    name: 'DashboardHome',
-                    component: () => import("@/views/dashboard/DashHome.vue")
-                }
-            ]
+async function userCurrentApi(): Promise<baseResponseDTO<userCurrentDTO>> {
+    let returnData = {} as baseResponseDTO<userCurrentDTO>;
+    await axios({
+        method: 'GET',
+        url: apiURL + "/api/v1/user/current",
+        headers: {
+            "Authorization": getAuthorization(),
+            "X-User-Uuid": localStorage.getItem("uuid"),
         }
-    ]
-})
+    }).then((response) => {
+        console.debug("[API] 执行接口 userCurrentApi", response);
+        returnData = response.data;
+    }).catch((error) => {
+        console.warn("[API] 执行接口 userCurrentApi 出现错误", error);
+        returnData = error.response.data;
+    }).finally(() => {
+        console.debug("[API] 接口请求数据返回结果", returnData);
+    })
+    return returnData;
+}
 
-export default router
+export {userCurrentApi};
