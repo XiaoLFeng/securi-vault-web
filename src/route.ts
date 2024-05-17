@@ -39,8 +39,15 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'index',
-            component: () => import("@/views/BaseAuth.vue")
+            name: 'BaseIndex',
+            component: () => import("@/views/BaseIndex.vue"),
+            children: [
+                {
+                    path: '',
+                    name: 'IndexHome',
+                    component: () => import("@/views/index/IndexHome.vue")
+                }
+            ]
         },
         {
             path: '/auth',
@@ -56,6 +63,11 @@ const router = createRouter({
                     path: 'biometric',
                     name: 'AuthBiometricLogin',
                     component: () => import("@/views/auth/AuthBiometricLogin.vue")
+                },
+                {
+                    path: 'initial',
+                    name: 'AuthInitial',
+                    component: () => import("@/views/auth/AuthInitial.vue")
                 }
             ]
         },
