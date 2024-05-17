@@ -58,4 +58,25 @@ async function userCurrentApi(): Promise<BaseResponseDTO<userCurrentDTO>> {
     return returnData;
 }
 
-export {userCurrentApi};
+async function sendAuthorizationApi(): Promise<BaseResponseDTO<null>> {
+    let returnData = {} as BaseResponseDTO<null>;
+    await axios({
+        method: 'GET',
+        url: apiURL + "/api/v1/user/send-authorization",
+        headers: {
+            "Authorization": getAuthorization(),
+            "X-User-Uuid": localStorage.getItem("uuid"),
+        }
+    }).then((response) => {
+        console.debug("[API] 执行接口 sendAuthorizationApi", response);
+        returnData = response.data;
+    }).catch((error) => {
+        console.warn("[API] 执行接口 sendAuthorizationApi 出现错误", error);
+        returnData = error.response.data;
+    }).finally(() => {
+        console.debug("[API] 接口请求数据返回结果", returnData);
+    })
+    return returnData;
+}
+
+export {userCurrentApi, sendAuthorizationApi};

@@ -36,7 +36,7 @@
 import {AppstoreAddOutlined, DeleteOutlined, EditOutlined, EyeOutlined, LockOutlined} from "@ant-design/icons-vue";
 import {getPasswordsApi} from "@/apis/password-api";
 import type {BaseResponseDTO} from "@/models/dto/customDTO";
-import type {passwordDTO} from "@/models/dto/PasswordDTO";
+import type {Password, passwordDTO} from "@/models/dto/PasswordDTO";
 
 export default {
   name: "DashPassword",
@@ -44,18 +44,21 @@ export default {
   data() {
     return {
       getPasswordList: {} as BaseResponseDTO<passwordDTO>,
-      addPasswordOpen: false,
-      hasAddPassword: false,
+      addPasswordModal: false,
+      delPasswordModal: false,
+      delPasswordUuid: {} as Password,
+      hasListChange: false,
     }
   },
   async created() {
     this.getPasswordList = await getPasswordsApi()
   },
   watch: {
-    hasAddPassword: {
+    hasListChange: {
       handler: async function (value) {
         if (value) {
           this.getPasswordList = await getPasswordsApi()
+          this.hasListChange = false;
         }
       },
       immediate: true
@@ -66,6 +69,7 @@ export default {
 
 <script lang="ts" setup>
 import DashboardAddPassword from "@/components/DashboardAddPassword.vue";
+import DashboardDeletePassword from "@/components/DashboardDeletePassword.vue";
 
 function conversionTime(time: Date) {
   if (!time) {
@@ -88,7 +92,7 @@ function conversionTime(time: Date) {
           <div class="flex items-center justify-end gap-3 mb-3">
             <button
                 class="inline-block rounded border border-blue-400 py-1 px-3 text-sm font-medium text-blue-400 transition hover:scale-110 focus:outline-none focus:ring active:text-blue-500 hover:rotate-6 active:rotate-12"
-                @click="() => {addPasswordOpen = true}"
+                @click="() => addPasswordModal = true"
             >
               <span class="flex items-center justify-center">
                 <AppstoreAddOutlined class="pe-1"/>
@@ -111,7 +115,7 @@ function conversionTime(time: Date) {
           <tbody class="divide-y divide-gray-200">
           <tr v-for="(password, index) in getPasswordList?.data?.password" :key="index" class="odd:bg-gray-50">
             <td class="whitespace-nowrap px-4 py-2 text-gray-900">
-              <a :href="password.website" target="_blank" class="text-blue-400 hover:text-blue-500">
+              <a :href="password.website" class="text-blue-400 hover:text-blue-500" target="_blank">
                 {{ password.website }}
               </a>
             </td>
@@ -133,7 +137,7 @@ function conversionTime(time: Date) {
                 </button>
               </div>
               <div class="transition hover:scale-110 text-red-400 hover:text-red-500">
-                <button class="flex items-center" type="button">
+                <button class="flex items-center" type="button" @click="() => {delPasswordModal = true; delPasswordUuid = password;}">
                   <DeleteOutlined class="pe-1"/>
                   <span>删除</span>
                 </button>
@@ -146,9 +150,15 @@ function conversionTime(time: Date) {
     </article>
   </div>
   <DashboardAddPassword
-      :show-modal="addPasswordOpen"
-      @update-modal="(newValue) => addPasswordOpen = newValue"
-      @add-password="(isAdd) => hasAddPassword = isAdd"
+      :show-modal="addPasswordModal"
+      @update-modal="(newValue) => addPasswordModal = newValue"
+      @add-password="(isAdd) => hasListChange = isAdd"
+  />
+  <DashboardDeletePassword
+      :del-uuid="delPasswordUuid"
+      :show-modal="delPasswordModal"
+      @update-modal="(newValue) => delPasswordModal = newValue"
+      @del-password="(isDel) => hasListChange = isDel"
   />
 </template>
 

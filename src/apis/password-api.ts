@@ -103,4 +103,28 @@ async function addPasswordApi(data: passwordEntity): Promise<BaseResponseDTO<nul
     return returnData;
 }
 
-export {getPasswordGeneralApi, getPasswordsApi, addPasswordApi};
+async function delPasswordApi(id: String, auth: String): Promise<BaseResponseDTO<null>> {
+    let returnData = {} as BaseResponseDTO<null>;
+    await axios({
+        method: 'DELETE',
+        url: apiURL + "/api/v1/password/" + id,
+        params: {
+            verify: auth
+        },
+        headers: {
+            "Authorization": getAuthorization(),
+            "X-User-Uuid": localStorage.getItem("uuid"),
+        },
+    }).then((response) => {
+        console.debug("[API] 执行接口 delPasswordApi", response);
+        returnData = response.data;
+    }).catch((error) => {
+        console.warn("[API] 执行接口 delPasswordApi 出现错误", error);
+        returnData = error.response.data;
+    }).finally(() => {
+        console.debug("[API] 接口请求数据返回结果", returnData);
+    })
+    return returnData;
+}
+
+export {getPasswordGeneralApi, getPasswordsApi, addPasswordApi, delPasswordApi};
