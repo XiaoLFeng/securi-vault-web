@@ -34,6 +34,7 @@
 
 <script lang="ts">
 import {userCurrentApi} from "@/apis/user-api";
+import {message} from "ant-design-vue";
 
 export default {
   name: 'BaseAuth',
@@ -45,6 +46,9 @@ export default {
     const getUser = await userCurrentApi();
     if (getUser.output === "Success") {
       this.$router.replace({name: 'DashboardHome', replace: true});
+    } else {
+      message.warn('登录失效，请重新登录');
+      this.$router.replace({name: 'AuthLogin', replace: true});
     }
   }
 }

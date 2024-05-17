@@ -33,15 +33,123 @@
   -->
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {AppstoreAddOutlined, DeleteOutlined, EditOutlined, EyeOutlined, LockOutlined} from "@ant-design/icons-vue";
+import {getPasswordsApi} from "@/apis/password-api";
+import type {BaseResponseDTO} from "@/models/dto/customDTO";
+import type {passwordDTO} from "@/models/dto/PasswordDTO";
 
-export default defineComponent({
-  name: "DashPassword"
-})
+export default {
+  name: "DashPassword",
+  components: {LockOutlined, EyeOutlined, DeleteOutlined, EditOutlined, AppstoreAddOutlined,},
+  data() {
+    return {
+      getPasswordList: {} as BaseResponseDTO<passwordDTO>,
+      addPasswordOpen: false,
+      hasAddPassword: false,
+    }
+  },
+  async created() {
+    this.getPasswordList = await getPasswordsApi()
+  },
+  watch: {
+    hasAddPassword: {
+      handler: async function (value) {
+        if (value) {
+          this.getPasswordList = await getPasswordsApi()
+        }
+      },
+      immediate: true
+    }
+  }
+}
+</script>
+
+<script lang="ts" setup>
+import DashboardAddPassword from "@/components/DashboardAddPassword.vue";
+
+function conversionTime(time: Date) {
+  if (!time) {
+    return null
+  } else {
+    return new Date(time).toLocaleString()
+  }
+}
 </script>
 
 <template>
-asdsda
+  <div class="grid gap-8 w-full">
+    <article class="rounded-xl bg-white p-4 ring ring-indigo-50 sm:p-6 lg:p-8 shadow-lg">
+      <div class="col-span-2 grid">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="mb-3 text-2xl flex items-center justify-start">
+            <LockOutlined class="pe-3"/>
+            <span class="font-bold">密码本</span>
+          </div>
+          <div class="flex items-center justify-end gap-3 mb-3">
+            <button
+                class="inline-block rounded border border-blue-400 py-1 px-3 text-sm font-medium text-blue-400 transition hover:scale-110 focus:outline-none focus:ring active:text-blue-500 hover:rotate-6 active:rotate-12"
+                @click="() => {addPasswordOpen = true}"
+            >
+              <span class="flex items-center justify-center">
+                <AppstoreAddOutlined class="pe-1"/>
+                <span>添加密码</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <table class="w-full divide-y-2 divide-gray-200 bg-white text-sm">
+          <thead class="ltr:text-left rtl:text-right text-left">
+          <tr>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">站点</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">用户名</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">查看时间</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">创建时间</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">更新时间</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">操作</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          <tr v-for="(password, index) in getPasswordList?.data?.password" :key="index" class="odd:bg-gray-50">
+            <td class="whitespace-nowrap px-4 py-2 text-gray-900">
+              <a :href="password.website" target="_blank" class="text-blue-400 hover:text-blue-500">
+                {{ password.website }}
+              </a>
+            </td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ password.username }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(password.seeTime) }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(password.createdAt) }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(password.updatedAt) }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3">
+              <div class="transition hover:scale-110 text-blue-400 hover:text-blue-500">
+                <button class="flex items-center" type="button">
+                  <EyeOutlined class="pe-1"/>
+                  <span>查看</span>
+                </button>
+              </div>
+              <div class="transition hover:scale-110 text-blue-400 hover:text-blue-500">
+                <button class="flex items-center" type="button">
+                  <EditOutlined class="pe-1"/>
+                  <span>修改</span>
+                </button>
+              </div>
+              <div class="transition hover:scale-110 text-red-400 hover:text-red-500">
+                <button class="flex items-center" type="button">
+                  <DeleteOutlined class="pe-1"/>
+                  <span>删除</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+  <DashboardAddPassword
+      :show-modal="addPasswordOpen"
+      @update-modal="(newValue) => addPasswordOpen = newValue"
+      @add-password="(isAdd) => hasAddPassword = isAdd"
+  />
 </template>
 
 <style scoped>
