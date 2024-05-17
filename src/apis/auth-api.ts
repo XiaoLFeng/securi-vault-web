@@ -35,7 +35,7 @@
 import axios from "axios";
 import {apiURL, getAuthorization} from "@/apis/api-link";
 import type {userLoginDTO} from "@/models/dto/userLoginDTO";
-import type {baseResponseDTO} from "@/models/dto/customDTO";
+import type {BaseResponseDTO} from "@/models/dto/customDTO";
 
 /**
  * # 用户登录接口
@@ -43,10 +43,10 @@ import type {baseResponseDTO} from "@/models/dto/customDTO";
  * - 地址：/api/v1/auth/login
  * - 介绍：用户进行登录的相关接口
  *
- * @return {Promise<baseResponseDTO<userLoginDTO>>}
+ * @return {Promise<BaseResponseDTO<userLoginDTO>>}
  */
-async function authLoginApi(user: string, password: string): Promise<baseResponseDTO<userLoginDTO>> {
-    let returnData = {} as baseResponseDTO<userLoginDTO>;
+async function authLoginApi(user: string, password: string): Promise<BaseResponseDTO<userLoginDTO>> {
+    let returnData = {} as BaseResponseDTO<userLoginDTO>;
     await axios({
         method: 'post',
         url: apiURL + "/api/v1/auth/login",

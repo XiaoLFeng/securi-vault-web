@@ -68,6 +68,16 @@ const router = createRouter({
                     path: 'home',
                     name: 'DashboardHome',
                     component: () => import("@/views/dashboard/DashHome.vue")
+                },
+                {
+                    path: 'password',
+                    name: 'DashboardPassword',
+                    component: () => import("@/views/dashboard/DashPassword.vue")
+                },
+                {
+                    path: 'token',
+                    name: 'DashboardToken',
+                    component: () => import("@/views/dashboard/DashToken.vue")
                 }
             ]
         }

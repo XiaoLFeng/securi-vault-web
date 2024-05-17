@@ -32,7 +32,7 @@
  * *******************************************************************************
  */
 
-export type baseResponseDTO<E> = {
+export type BaseResponseDTO<E> = {
     output: string;
     code: number;
     message: string;
