@@ -35,12 +35,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {CheckOutlined} from "@ant-design/icons-vue";
-import type {passwordSeeDTO} from "@/models/dto/passwordSeeDTO";
-import {getPasswordApi} from "@/apis/password-api";
 import DashboardAuthorization from "@/components/DashboardAuthorization.vue";
+import type {tokenSeeDTO} from "@/models/dto/tokenSeeDTO";
+import {getTokenApi} from "@/apis/token-api";
 
 export default defineComponent({
-  name: "DashboardSeePassword",
+  name: "DashboardSeeToken",
   components: {DashboardAuthorization, CheckOutlined},
   props: {
     showModal: Boolean,
@@ -49,10 +49,10 @@ export default defineComponent({
   data() {
     return {
       modal: false,
-      showPasswordData: {} as passwordSeeDTO,
+      showTokenData: {} as tokenSeeDTO,
       authorizationModal: false,
       authorizationCode: "",
-      passwordUuid: ""
+      tokenUuid: ""
     }
   },
   methods: {
@@ -63,7 +63,7 @@ export default defineComponent({
   watch: {
     showUuid: {
       handler: function (val) {
-        this.passwordUuid = val;
+        this.tokenUuid = val;
       },
       immediate: true
     },
@@ -85,9 +85,9 @@ export default defineComponent({
       this.$emit('updateModal', val);
       if (val) {
         this.authorizationModal = false;
-        const returnData = await getPasswordApi(this.passwordUuid, this.authorizationCode);
+        const returnData = await getTokenApi(this.tokenUuid, this.authorizationCode);
         if (returnData.output === "Success") {
-          this.showPasswordData = returnData.data
+          this.showTokenData = returnData.data
         } else {
           if (returnData.output === "NeedReAuthentication") {
             this.authorizationModal = true;
@@ -101,35 +101,37 @@ export default defineComponent({
 </script>
 
 <template>
-  <a-modal v-model:open="modal" :confirm-loading="confirmLoading" title="查看密码">
+  <a-modal v-model:open="modal" :confirm-loading="confirmLoading" title="查看令牌">
     <div class="flow-root mt-8">
       <dl class="-my-3 divide-y divide-gray-100 text-sm">
         <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
           <dt class="font-medium text-gray-900">序列号</dt>
-          <dd class="text-gray-700 sm:col-span-2">{{ showPasswordData.id }}</dd>
+          <dd class="text-gray-700 sm:col-span-2">{{ showTokenData.id }}</dd>
         </div>
 
         <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
           <dt class="font-medium text-gray-900">站点</dt>
-          <dd class="text-gray-700 sm:col-span-2">
-            <a :href="showPasswordData.website" class="text-blue-400 hover:text-blue-500"
-               target="_blank">{{ showPasswordData.website }}</a>
-          </dd>
+          <dd class="text-gray-700 sm:col-span-2">{{ showTokenData.site }}</dd>
         </div>
 
         <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-          <dt class="font-medium text-gray-900">账号</dt>
-          <dd class="text-gray-700 sm:col-span-2">{{ showPasswordData.username }}</dd>
+          <dt class="font-medium text-gray-900">账户密钥</dt>
+          <dd class="text-gray-700 sm:col-span-2">{{ showTokenData.accessKey }}</dd>
         </div>
 
         <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-          <dt class="font-medium text-gray-900">密码</dt>
-          <dd class="text-gray-700 sm:col-span-2">{{ showPasswordData.password }}</dd>
+          <dt class="font-medium text-gray-900">密码密钥</dt>
+          <dd class="text-gray-700 sm:col-span-2">{{ showTokenData.secretKey }}</dd>
         </div>
 
         <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
           <dt class="font-medium text-gray-900">其他</dt>
-          <dd class="text-gray-700 sm:col-span-2">{{ showPasswordData.other }}</dd>
+          <dd class="text-gray-700 sm:col-span-2">{{ showTokenData.other }}</dd>
+        </div>
+
+        <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+          <dt class="font-medium text-gray-900">描述说明</dt>
+          <dd class="text-gray-700 sm:col-span-2">{{ showTokenData.description }}</dd>
         </div>
       </dl>
     </div>

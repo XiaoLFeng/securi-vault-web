@@ -70,6 +70,10 @@ export default {
       } else {
         return new Date(time).toLocaleString()
       }
+    },
+    checkHasHttp(url: string): boolean {
+      const reg = new RegExp("^(http|https)://");
+      return reg.test(url);
     }
   },
   async created() {
@@ -183,9 +187,10 @@ export default {
               <tbody class="divide-y divide-gray-200">
               <tr v-for="(logs, index) in getLogs?.data?.logs" :key="index" class="odd:bg-gray-50">
                 <td class="whitespace-nowrap px-4 py-2 text-gray-900">{{ logs.type }}</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                <td class="whitespace-nowrap px-4 py-2 text-gray-700" v-if="checkHasHttp(logs.site)">
                   <a :href="logs.site" target="_blank" class="text-blue-400 hover:text-blue-500">{{ logs.site }}</a>
                 </td>
+                <td class="whitespace-nowrap px-4 py-2 text-gray-700" v-else>{{ logs.site }}</td>
                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ logs.username }}</td>
                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ logs.controls }}</td>
                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(logs.controlsAt) }}</td>

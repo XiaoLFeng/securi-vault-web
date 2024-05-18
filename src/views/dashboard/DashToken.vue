@@ -39,15 +39,22 @@ import type {BaseResponseDTO} from "@/models/dto/customDTO";
 import type {tokenDTO} from "@/models/dto/tokenDTO";
 import {getTokensApi} from "@/apis/token-api";
 import DashboardAddToken from "@/components/DashboardAddToken.vue";
+import DashboardSeeToken from "@/components/DashboardSeeToken.vue";
 
 export default defineComponent({
   name: "DashToken",
-  components: {DashboardAddToken, LockOutlined, AppstoreAddOutlined, EyeOutlined, DeleteOutlined},
+  components: {
+    DashboardSeeToken, DashboardAddToken, LockOutlined, AppstoreAddOutlined, EyeOutlined, DeleteOutlined
+  },
   data() {
     return {
       getTokenList: {} as BaseResponseDTO<tokenDTO>,
       addTokenModal: false,
+      showTokenModal: false,
+      showTokenUuid: "",
+
       hasListChange: false,
+
     }
   },
   async created() {
@@ -117,14 +124,14 @@ export default defineComponent({
             <td class="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3">
               <div class="transition hover:scale-110 text-blue-400 hover:text-blue-500">
                 <button class="flex items-center" type="button"
-                        @click="() => {addTokenModal = true;}">
+                        @click="() => {showTokenModal = true; showTokenUuid = token.id;}">
                   <EyeOutlined class="pe-1"/>
                   <span>查看</span>
                 </button>
               </div>
               <div class="transition hover:scale-110 text-red-400 hover:text-red-500">
                 <button class="flex items-center" type="button"
-                        >
+                >
                   <DeleteOutlined class="pe-1"/>
                   <span>删除</span>
                 </button>
@@ -140,6 +147,11 @@ export default defineComponent({
       :show-modal="addTokenModal"
       @update-modal="(newValue) => addTokenModal = newValue"
       @add-Token="(isAdd) => hasListChange = isAdd"
+  />
+  <DashboardSeeToken
+      :show-modal="showTokenModal"
+      :show-uuid="showTokenUuid"
+      @update-modal="(newValue) => showTokenModal = newValue"
   />
 </template>
 

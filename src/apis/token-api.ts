@@ -38,6 +38,7 @@ import {apiURL, getAuthorization} from "@/apis/link-api";
 import type {tokenGeneralDTO} from "@/models/dto/tokenGeneralDTO";
 import type {tokenDTO} from "@/models/dto/tokenDTO";
 import type {tokenEntity} from "@/models/entity/token";
+import type {tokenSeeDTO} from "@/models/dto/tokenSeeDTO";
 
 async function getTokenGeneralApi(): Promise<BaseResponseDTO<tokenGeneralDTO>> {
     let returnData = {} as BaseResponseDTO<tokenGeneralDTO>;
@@ -81,6 +82,30 @@ async function getTokensApi(): Promise<BaseResponseDTO<tokenDTO>> {
     return returnData;
 }
 
+async function getTokenApi(id: String, auth: String): Promise<BaseResponseDTO<tokenSeeDTO>> {
+    let returnData = {} as BaseResponseDTO<tokenSeeDTO>;
+    await axios({
+        method: 'GET',
+        url: apiURL + "/api/v1/token/" + id,
+        params: {
+            verify: auth
+        },
+        headers: {
+            "Authorization": getAuthorization(),
+            "X-User-Uuid": localStorage.getItem("uuid"),
+        },
+    }).then((response) => {
+        console.debug("[API] 执行接口 getTokenApi", response);
+        returnData = response.data;
+    }).catch((error) => {
+        console.warn("[API] 执行接口 getTokenApi 出现错误", error);
+        returnData = error.response.data;
+    }).finally(() => {
+        console.debug("[API] 接口请求数据返回结果", returnData);
+    })
+    return returnData;
+}
+
 async function addTokenApi(data: tokenEntity): Promise<BaseResponseDTO<null>> {
     let returnData = {} as BaseResponseDTO<null>;
     await axios({
@@ -103,4 +128,4 @@ async function addTokenApi(data: tokenEntity): Promise<BaseResponseDTO<null>> {
     return returnData;
 }
 
-export {getTokenGeneralApi, getTokensApi, addTokenApi}
+export {getTokenGeneralApi, getTokensApi, addTokenApi, getTokenApi}
