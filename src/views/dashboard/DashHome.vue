@@ -46,6 +46,8 @@ import {
 } from "@ant-design/icons-vue";
 import type {passwordGeneralDTO} from "@/models/dto/passwordGeneral";
 import {getPasswordGeneralApi} from "@/apis/password-api";
+import type {LogsDTO} from "@/models/entity/logs";
+import {getLogApi} from "@/apis/logs-api";
 
 export default {
   name: "DashboardHome",
@@ -54,7 +56,17 @@ export default {
   data() {
     return {
       getUser: {} as BaseResponseDTO<userCurrentDTO>,
-      getPasswordGeneral: {} as BaseResponseDTO<passwordGeneralDTO>
+      getPasswordGeneral: {} as BaseResponseDTO<passwordGeneralDTO>,
+      getLogs: {} as BaseResponseDTO<LogsDTO>
+    }
+  },
+  methods: {
+    conversionTime(time: Date) {
+      if (!time) {
+        return null
+      } else {
+        return new Date(time).toLocaleString()
+      }
     }
   },
   async created() {
@@ -63,6 +75,7 @@ export default {
       this.getUser = await this.getUserApi();
     }
     this.getPasswordGeneral = await getPasswordGeneralApi()
+    this.getLogs = await getLogApi({page: 1, size: 20});
   }
 }
 </script>
@@ -73,12 +86,15 @@ export default {
       <article class="rounded-xl bg-white p-4 ring ring-indigo-50 sm:p-6 lg:p-8 shadow-lg">
         <div class="grid grid-cols-2 gap-8">
           <div>
-            <div class="block rounded-lg p-4 shadow border transition hover:scale-105 hover:shadow-lg" @click="$router.push({name: 'DashboardPassword'})">
+            <div class="block rounded-lg p-4 shadow border transition hover:scale-105 hover:shadow-lg"
+                 @click="$router.push({name: 'DashboardPassword'})">
               <div>
                 <dl>
                   <div class="text-sm text-gray-500">密码本</div>
                   <div>
-                    <span class="font-medium">当前有 <span class="font-bold">{{ getPasswordGeneral?.data?.totalPassword }}</span> 个密码</span>
+                    <span class="font-medium">当前有 <span class="font-bold">{{
+                        getPasswordGeneral?.data?.totalPassword
+                      }}</span> 个密码</span>
                   </div>
                 </dl>
                 <div class="mt-3 flex items-center gap-8 text-xs">
@@ -108,7 +124,8 @@ export default {
             </div>
           </div>
           <div>
-            <div class="block rounded-lg p-4 shadow border transition hover:scale-105 hover:shadow-lg" @click="$router.push({name: 'DashboardToken'})">
+            <div class="block rounded-lg p-4 shadow border transition hover:scale-105 hover:shadow-lg"
+                 @click="$router.push({name: 'DashboardToken'})">
               <div>
                 <dl>
                   <div class="text-sm text-gray-500">令牌库</div>
@@ -158,26 +175,14 @@ export default {
               </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
-              <tr class="odd:bg-gray-50">
-                <td class="whitespace-nowrap px-4 py-2 text-gray-900">John Doe</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">24/05/1995</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">Web Developer</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">$120,000</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">$120,000</td>
-              </tr>
-              <tr class="odd:bg-gray-50">
-                <td class="whitespace-nowrap px-4 py-2 text-gray-900">Jane Doe</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">04/11/1980</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">Web Designer</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">$100,000</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">$100,000</td>
-              </tr>
-              <tr class="odd:bg-gray-50">
-                <td class="whitespace-nowrap px-4 py-2 text-gray-900">Gary Barlow</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">24/05/1995</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">Singer</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">$20,000</td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">$20,000</td>
+              <tr v-for="(logs, index) in getLogs?.data?.logs" :key="index" class="odd:bg-gray-50">
+                <td class="whitespace-nowrap px-4 py-2 text-gray-900">{{ logs.type }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                  <a :href="logs.site" target="_blank" class="text-blue-400 hover:text-blue-500">{{ logs.site }}</a>
+                </td>
+                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ logs.username }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ logs.controls }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(logs.controlsAt) }}</td>
               </tr>
               </tbody>
             </table>
@@ -189,7 +194,7 @@ export default {
       <article class="rounded-xl bg-white p-4 ring ring-indigo-50 sm:p-6 lg:p-8 shadow-lg">
         <div class="grid gap-3">
           <div class="grid justify-center">
-            <img alt="MyAvatar" class="w-28 h-full rounded-full" src="@/assets/images/myAvatar.png">
+            <img alt="MyAvatar" class="w-28 h-full rounded-full" src="https://i-cdn.akass.cn/2024/05/664870a814c0d.png!wp">
           </div>
           <div class="text-center font-extrabold text-3xl">{{ getUser.data?.username }}</div>
           <div class="mb-2">

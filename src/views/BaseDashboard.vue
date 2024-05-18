@@ -74,7 +74,7 @@ export default {
 
 <template>
   <div class="w-full grid gap-3" id="background-image">
-    <div class="bg-emerald-50 shadow">
+    <div class="bg-gray-50 shadow">
       <DashboardHeader/>
     </div>
     <div class="py-12 w-full">

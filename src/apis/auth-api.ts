@@ -33,7 +33,7 @@
  */
 
 import axios from "axios";
-import {apiURL, getAuthorization} from "@/apis/api-link";
+import {apiURL, getAuthorization} from "@/apis/link-api";
 import type {userLoginDTO} from "@/models/dto/userLoginDTO";
 import type {BaseResponseDTO} from "@/models/dto/customDTO";
 

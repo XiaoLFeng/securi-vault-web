@@ -32,44 +32,17 @@
  * *******************************************************************************
  */
 
-import type {BaseResponseDTO} from "@/models/dto/customDTO";
-import axios from "axios";
-import {apiURL} from "@/apis/link-api";
-import type {infoInitializeAdminDTO} from "@/models/dto/infoInitializeAdminDTO";
+export type Log = {
+  type: string;
+  site: string;
+  username: string;
+  controls: string;
+  controlsAt: Date;
+};
 
-async function needToInitialize(): Promise<BaseResponseDTO<null>> {
-    let returnData = {} as BaseResponseDTO<null>;
-    await axios({
-        method: 'GET',
-        url: apiURL + "/initialize",
-    }).then((response) => {
-        console.debug("[API] 执行接口 needToInitialize", response);
-        returnData = response.data;
-    }).catch((error) => {
-        console.warn("[API] 执行接口 needToInitialize 出现错误", error);
-        returnData = error.response.data;
-    }).finally(() => {
-        console.debug("[API] 接口请求数据返回结果", returnData);
-    })
-    return returnData;
-}
-
-async function initializeAdmin(data: infoInitializeAdminDTO): Promise<BaseResponseDTO<null>> {
-    let returnData = {} as BaseResponseDTO<null>;
-    await axios({
-        method: 'POST',
-        url: apiURL + "/initialize/admin",
-        data: data,
-    }).then((response) => {
-        console.debug("[API] 执行接口 initializeAdmin", response);
-        returnData = response.data;
-    }).catch((error) => {
-        console.warn("[API] 执行接口 initializeAdmin 出现错误", error);
-        returnData = error.response.data;
-    }).finally(() => {
-        console.debug("[API] 接口请求数据返回结果", returnData);
-    })
-    return returnData;
-}
-
-export {needToInitialize, initializeAdmin};
+export type LogsDTO = {
+  logs: Log[];
+  page: number;
+  size: number;
+  total: number;
+};

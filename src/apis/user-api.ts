@@ -35,7 +35,7 @@
 import type {BaseResponseDTO} from "@/models/dto/customDTO";
 import type {userCurrentDTO} from "@/models/dto/userCurrentDTO";
 import axios from "axios";
-import {apiURL, getAuthorization} from "@/apis/api-link";
+import {apiURL, getAuthorization} from "@/apis/link-api";
 
 async function userCurrentApi(): Promise<BaseResponseDTO<userCurrentDTO>> {
     let returnData = {} as BaseResponseDTO<userCurrentDTO>;
