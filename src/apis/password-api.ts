@@ -39,6 +39,7 @@ import type {passwordGeneralDTO} from "@/models/dto/passwordGeneral";
 import type {passwordDTO} from "@/models/dto/PasswordDTO";
 import type {passwordEntity} from "@/models/entity/password";
 import type {passwordSeeDTO} from "@/models/dto/passwordSeeDTO";
+import type {passwordEditDTO} from "@/models/dto/passwordEditDTO";
 
 async function getPasswordGeneralApi(): Promise<BaseResponseDTO<passwordGeneralDTO>> {
     let returnData = {} as BaseResponseDTO<passwordGeneralDTO>;
@@ -152,4 +153,29 @@ async function getPasswordApi(id: String, auth: String): Promise<BaseResponseDTO
     return returnData;
 }
 
-export {getPasswordGeneralApi, getPasswordsApi, addPasswordApi, delPasswordApi, getPasswordApi};
+async function editPasswordApi(editData: passwordEditDTO, uuid: String, auth: String): Promise<BaseResponseDTO<passwordSeeDTO>> {
+    let returnData = {} as BaseResponseDTO<passwordSeeDTO>;
+    await axios({
+        method: 'PUT',
+        url: apiURL + "/api/v1/password/" + uuid,
+        params: {
+            verify: auth
+        },
+        headers: {
+            "Authorization": getAuthorization(),
+            "X-User-Uuid": localStorage.getItem("uuid"),
+        },
+        data: editData
+    }).then((response) => {
+        console.debug("[API] 执行接口 editPasswordApi", response);
+        returnData = response.data;
+    }).catch((error) => {
+        console.warn("[API] 执行接口 editPasswordApi 出现错误", error);
+        returnData = error.response.data;
+    }).finally(() => {
+        console.debug("[API] 接口请求数据返回结果", returnData);
+    })
+    return returnData;
+}
+
+export {getPasswordGeneralApi, getPasswordsApi, addPasswordApi, delPasswordApi, getPasswordApi, editPasswordApi};

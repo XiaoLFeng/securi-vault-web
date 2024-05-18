@@ -49,6 +49,8 @@ export default {
       delPasswordUuid: {} as Password,
       showPasswordModal: false,
       showPasswordUuid: "",
+      editPasswordModal: false,
+      editPasswordInfo: {} as Password,
       hasListChange: false,
     }
   },
@@ -73,6 +75,7 @@ export default {
 import DashboardAddPassword from "@/components/DashboardAddPassword.vue";
 import DashboardDeletePassword from "@/components/DashboardDeletePassword.vue";
 import DashboardSeePassword from "@/components/DashboardSeePassword.vue";
+import DashboardEditPassword from "@/components/DashboardEditPassword.vue";
 
 function conversionTime(time: Date) {
   if (!time) {
@@ -135,7 +138,8 @@ function conversionTime(time: Date) {
                 </button>
               </div>
               <div class="transition hover:scale-110 text-blue-400 hover:text-blue-500">
-                <button class="flex items-center" type="button">
+                <button class="flex items-center" type="button"
+                        @click="() => {editPasswordModal = true; editPasswordInfo = password;}">
                   <EditOutlined class="pe-1"/>
                   <span>修改</span>
                 </button>
@@ -169,6 +173,11 @@ function conversionTime(time: Date) {
       :show-modal="showPasswordModal"
       :show-uuid="showPasswordUuid"
       @update-modal="(newValue) => showPasswordModal = newValue"
+  />
+  <DashboardEditPassword
+      :show-modal="editPasswordModal"
+      :edit-password="editPasswordInfo"
+      @update-modal="(newValue) => editPasswordModal = newValue"
   />
 </template>
 

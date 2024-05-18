@@ -57,6 +57,8 @@ export default {
     this.getUser = await this.getUserApi;
     if (this.getUser?.output !== "Success") {
       message.warn("登录已失效")
+      localStorage.removeItem("token");
+      localStorage.removeItem("uuid");
       this.$router.replace({name: 'AuthLogin', replace: true});
     } else {
       console.debug("[CONTROL] 用户 " + this.getUser?.data.username + " 登录有效", )
