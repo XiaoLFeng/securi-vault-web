@@ -128,4 +128,28 @@ async function addTokenApi(data: tokenEntity): Promise<BaseResponseDTO<null>> {
     return returnData;
 }
 
-export {getTokenGeneralApi, getTokensApi, addTokenApi, getTokenApi}
+async function delTokenApi(id: String, auth: String): Promise<BaseResponseDTO<null>> {
+    let returnData = {} as BaseResponseDTO<null>;
+    await axios({
+        method: 'DELETE',
+        url: apiURL + "/api/v1/token/" + id,
+        params: {
+            verify: auth
+        },
+        headers: {
+            "Authorization": getAuthorization(),
+            "X-User-Uuid": localStorage.getItem("uuid"),
+        },
+    }).then((response) => {
+        console.debug("[API] 执行接口 delTokenApi", response);
+        returnData = response.data;
+    }).catch((error) => {
+        console.warn("[API] 执行接口 delTokenApi 出现错误", error);
+        returnData = error.response.data;
+    }).finally(() => {
+        console.debug("[API] 接口请求数据返回结果", returnData);
+    })
+    return returnData;
+}
+
+export {getTokenGeneralApi, getTokensApi, addTokenApi, getTokenApi, delTokenApi}

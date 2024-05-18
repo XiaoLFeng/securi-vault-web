@@ -40,11 +40,19 @@ import type {tokenDTO} from "@/models/dto/tokenDTO";
 import {getTokensApi} from "@/apis/token-api";
 import DashboardAddToken from "@/components/DashboardAddToken.vue";
 import DashboardSeeToken from "@/components/DashboardSeeToken.vue";
+import type {Password} from "@/models/dto/PasswordDTO";
+import DashboardDeleteToken from "@/components/DashboardDeleteToken.vue";
 
 export default defineComponent({
   name: "DashToken",
   components: {
-    DashboardSeeToken, DashboardAddToken, LockOutlined, AppstoreAddOutlined, EyeOutlined, DeleteOutlined
+    DashboardDeleteToken,
+    DashboardSeeToken,
+    DashboardAddToken,
+    LockOutlined,
+    AppstoreAddOutlined,
+    EyeOutlined,
+    DeleteOutlined
   },
   data() {
     return {
@@ -52,6 +60,8 @@ export default defineComponent({
       addTokenModal: false,
       showTokenModal: false,
       showTokenUuid: "",
+      delTokenModal: false,
+      delTokenUuid: {} as Password,
 
       hasListChange: false,
 
@@ -131,7 +141,7 @@ export default defineComponent({
               </div>
               <div class="transition hover:scale-110 text-red-400 hover:text-red-500">
                 <button class="flex items-center" type="button"
-                >
+                        @click="() => {delTokenModal = true; delTokenUuid = token;}">
                   <DeleteOutlined class="pe-1"/>
                   <span>删除</span>
                 </button>
@@ -152,6 +162,12 @@ export default defineComponent({
       :show-modal="showTokenModal"
       :show-uuid="showTokenUuid"
       @update-modal="(newValue) => showTokenModal = newValue"
+  />
+  <DashboardDeleteToken
+      :del-uuid="delTokenUuid"
+      :show-modal="delTokenModal"
+      @update-modal="(newValue) => delTokenModal = newValue"
+      @del-password="(isDel) => hasListChange = isDel"
   />
 </template>
 
