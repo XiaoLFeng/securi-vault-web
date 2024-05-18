@@ -44,10 +44,12 @@ import {
   SettingOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
-import type {passwordGeneralDTO} from "@/models/dto/passwordGeneral";
+import type {passwordGeneralDTO} from "@/models/dto/passwordGeneralDTO";
 import {getPasswordGeneralApi} from "@/apis/password-api";
 import type {LogsDTO} from "@/models/entity/logs";
 import {getLogApi} from "@/apis/logs-api";
+import type {tokenGeneralDTO} from "@/models/dto/tokenGeneralDTO";
+import {getTokenGeneralApi} from "@/apis/token-api";
 
 export default {
   name: "DashboardHome",
@@ -57,6 +59,7 @@ export default {
     return {
       getUser: {} as BaseResponseDTO<userCurrentDTO>,
       getPasswordGeneral: {} as BaseResponseDTO<passwordGeneralDTO>,
+      getTokenGeneral: {} as BaseResponseDTO<tokenGeneralDTO>,
       getLogs: {} as BaseResponseDTO<LogsDTO>
     }
   },
@@ -75,6 +78,7 @@ export default {
       this.getUser = await this.getUserApi();
     }
     this.getPasswordGeneral = await getPasswordGeneralApi()
+    this.getTokenGeneral = await getTokenGeneralApi()
     this.getLogs = await getLogApi({page: 1, size: 20});
   }
 }
@@ -130,7 +134,9 @@ export default {
                 <dl>
                   <div class="text-sm text-gray-500">令牌库</div>
                   <div>
-                    <span class="font-medium">当前有 <span class="font-bold">XX</span> 个令牌</span>
+                    <span class="font-medium">当前有 <span class="font-bold">{{
+                        getTokenGeneral?.data?.totalToken
+                      }}</span> 个令牌</span>
                   </div>
                 </dl>
                 <div class="mt-3 flex items-center gap-8 text-xs">
@@ -138,21 +144,21 @@ export default {
                     <FileAddTwoTone/>
                     <div class="mt-1.5 sm:mt-0">
                       <p class="text-gray-500">近日添加</p>
-                      <p class="font-medium">2 个</p>
+                      <p class="font-medium">{{ getTokenGeneral?.data?.recentlyAdd }} 个</p>
                     </div>
                   </div>
                   <div class="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
                     <CompassTwoTone/>
                     <div class="mt-1.5 sm:mt-0">
                       <p class="text-gray-500">近日查询</p>
-                      <p class="font-medium">2 个</p>
+                      <p class="font-medium">{{ getTokenGeneral?.data?.recentlyGet }} 个</p>
                     </div>
                   </div>
                   <div class="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
                     <DeleteTwoTone/>
                     <div class="mt-1.5 sm:mt-0">
                       <p class="text-gray-500">近日删除</p>
-                      <p class="font-medium">2 个</p>
+                      <p class="font-medium">{{ getTokenGeneral?.data?.recentlyRemove }} 个</p>
                     </div>
                   </div>
                 </div>

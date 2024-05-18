@@ -35,7 +35,7 @@
 import type {BaseResponseDTO} from "@/models/dto/customDTO";
 import axios from "axios";
 import {apiURL, getAuthorization} from "@/apis/link-api";
-import type {passwordGeneralDTO} from "@/models/dto/passwordGeneral";
+import type {passwordGeneralDTO} from "@/models/dto/passwordGeneralDTO";
 import type {passwordDTO} from "@/models/dto/PasswordDTO";
 import type {passwordEntity} from "@/models/entity/password";
 import type {passwordSeeDTO} from "@/models/dto/passwordSeeDTO";

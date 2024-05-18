@@ -34,14 +34,113 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {AppstoreAddOutlined, DeleteOutlined, EyeOutlined, LockOutlined} from "@ant-design/icons-vue";
+import type {BaseResponseDTO} from "@/models/dto/customDTO";
+import type {tokenDTO} from "@/models/dto/tokenDTO";
+import {getTokensApi} from "@/apis/token-api";
+import DashboardAddToken from "@/components/DashboardAddToken.vue";
 
 export default defineComponent({
-  name: "DashToken"
+  name: "DashToken",
+  components: {DashboardAddToken, LockOutlined, AppstoreAddOutlined, EyeOutlined, DeleteOutlined},
+  data() {
+    return {
+      getTokenList: {} as BaseResponseDTO<tokenDTO>,
+      addTokenModal: false,
+      hasListChange: false,
+    }
+  },
+  async created() {
+    this.getTokenList = await getTokensApi()
+    console.log(this.getTokenList)
+  },
+  watch: {
+    hasListChange: {
+      handler: async function (value) {
+        if (value) {
+          this.getTokenList = await getTokensApi()
+          this.hasListChange = false;
+        }
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    conversionTime(time: Date) {
+      if (!time) {
+        return null
+      } else {
+        return new Date(time).toLocaleString()
+      }
+    }
+  }
 })
 </script>
 
 <template>
-
+  <div class="grid gap-8 w-full">
+    <article class="rounded-xl bg-white p-4 ring ring-indigo-50 sm:p-6 lg:p-8 shadow-lg">
+      <div class="col-span-2 grid">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="mb-3 text-2xl flex items-center justify-start">
+            <LockOutlined class="pe-3"/>
+            <span class="font-bold">令牌库</span>
+          </div>
+          <div class="flex items-center justify-end gap-3 mb-3">
+            <button
+                class="inline-block rounded border border-blue-400 py-1 px-3 text-sm font-medium text-blue-400 transition hover:scale-110 focus:outline-none focus:ring active:text-blue-500 hover:rotate-6 active:rotate-12"
+                @click="() => addTokenModal = true"
+            >
+              <span class="flex items-center justify-center">
+                <AppstoreAddOutlined class="pe-1"/>
+                <span>添加令牌</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <table class="w-full divide-y-2 divide-gray-200 bg-white text-sm">
+          <thead class="ltr:text-left rtl:text-right text-left">
+          <tr>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">站点</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">账户令牌</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">查看时间</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">创建时间</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">操作</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          <tr v-for="(token, index) in getTokenList?.data?.token" :key="index" class="odd:bg-gray-50">
+            <td class="whitespace-nowrap px-4 py-2 text-gray-900">{{ token.site }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ token.accessKey }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(token.seeTime) }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(token.createdAt) }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3">
+              <div class="transition hover:scale-110 text-blue-400 hover:text-blue-500">
+                <button class="flex items-center" type="button"
+                        @click="() => {addTokenModal = true;}">
+                  <EyeOutlined class="pe-1"/>
+                  <span>查看</span>
+                </button>
+              </div>
+              <div class="transition hover:scale-110 text-red-400 hover:text-red-500">
+                <button class="flex items-center" type="button"
+                        >
+                  <DeleteOutlined class="pe-1"/>
+                  <span>删除</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+  <DashboardAddToken
+      :show-modal="addTokenModal"
+      @update-modal="(newValue) => addTokenModal = newValue"
+      @add-Token="(isAdd) => hasListChange = isAdd"
+  />
 </template>
 
 <style scoped>
