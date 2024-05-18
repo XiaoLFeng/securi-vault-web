@@ -47,6 +47,8 @@ export default {
       addPasswordModal: false,
       delPasswordModal: false,
       delPasswordUuid: {} as Password,
+      showPasswordModal: false,
+      showPasswordUuid: "",
       hasListChange: false,
     }
   },
@@ -70,6 +72,7 @@ export default {
 <script lang="ts" setup>
 import DashboardAddPassword from "@/components/DashboardAddPassword.vue";
 import DashboardDeletePassword from "@/components/DashboardDeletePassword.vue";
+import DashboardSeePassword from "@/components/DashboardSeePassword.vue";
 
 function conversionTime(time: Date) {
   if (!time) {
@@ -125,7 +128,8 @@ function conversionTime(time: Date) {
             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ conversionTime(password.updatedAt) }}</td>
             <td class="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3">
               <div class="transition hover:scale-110 text-blue-400 hover:text-blue-500">
-                <button class="flex items-center" type="button">
+                <button class="flex items-center" type="button"
+                        @click="() => {showPasswordModal = true; showPasswordUuid = password.id;}">
                   <EyeOutlined class="pe-1"/>
                   <span>查看</span>
                 </button>
@@ -137,7 +141,8 @@ function conversionTime(time: Date) {
                 </button>
               </div>
               <div class="transition hover:scale-110 text-red-400 hover:text-red-500">
-                <button class="flex items-center" type="button" @click="() => {delPasswordModal = true; delPasswordUuid = password;}">
+                <button class="flex items-center" type="button"
+                        @click="() => {delPasswordModal = true; delPasswordUuid = password;}">
                   <DeleteOutlined class="pe-1"/>
                   <span>删除</span>
                 </button>
@@ -159,6 +164,11 @@ function conversionTime(time: Date) {
       :show-modal="delPasswordModal"
       @update-modal="(newValue) => delPasswordModal = newValue"
       @del-password="(isDel) => hasListChange = isDel"
+  />
+  <DashboardSeePassword
+      :show-modal="showPasswordModal"
+      :show-uuid="showPasswordUuid"
+      @update-modal="(newValue) => showPasswordModal = newValue"
   />
 </template>
 

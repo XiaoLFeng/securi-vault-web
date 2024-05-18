@@ -36,14 +36,21 @@
 
 import type {BaseResponseDTO} from "@/models/dto/customDTO";
 import type {userCurrentDTO} from "@/models/dto/userCurrentDTO";
-import {CompassTwoTone, DeleteTwoTone, FileAddTwoTone, LockOutlined, UserOutlined} from "@ant-design/icons-vue";
+import {
+  CompassTwoTone,
+  DeleteTwoTone,
+  FileAddTwoTone,
+  LockOutlined,
+  SettingOutlined,
+  UserOutlined
+} from "@ant-design/icons-vue";
 import type {passwordGeneralDTO} from "@/models/dto/passwordGeneral";
 import {getPasswordGeneralApi} from "@/apis/password-api";
 
 export default {
   name: "DashboardHome",
   inject: ['getUserApi'],
-  components: {FileAddTwoTone, CompassTwoTone, DeleteTwoTone, LockOutlined, UserOutlined},
+  components: {FileAddTwoTone, CompassTwoTone, DeleteTwoTone, LockOutlined, UserOutlined, SettingOutlined},
   data() {
     return {
       getUser: {} as BaseResponseDTO<userCurrentDTO>,
@@ -203,7 +210,7 @@ export default {
                 type="submit"
             >
               <span class="flex items-center justify-center">
-                <UserOutlined class="pe-1"/>
+                <SettingOutlined class="pe-1"/>
                 <span>管理面板</span>
               </span>
             </button>

@@ -34,13 +34,13 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {LoadingOutlined, MailOutlined} from "@ant-design/icons-vue";
+import {LoadingOutlined, SendOutlined} from "@ant-design/icons-vue";
 import {sendAuthorizationApi} from "@/apis/user-api";
 import {message} from "ant-design-vue";
 
 export default defineComponent({
   name: "DashboardAuthorization",
-  components: {MailOutlined, LoadingOutlined},
+  components: {SendOutlined, LoadingOutlined},
   props: {
     showModal: Boolean
   },
@@ -67,6 +67,9 @@ export default defineComponent({
     }
   },
   watch: {
+    modal(val) {
+      this.$emit('updateModal', val);
+    },
     showModal: {
       handler: async function (value) {
         this.modal = value
@@ -77,6 +80,9 @@ export default defineComponent({
             message.success('授权码已发送，请查阅邮箱');
             this.confirmLoading = false;
           } else {
+            if (getAuthorizationBack.output === "VerifyCodeError") {
+              this.confirmLoading = false;
+            }
             message.error(getAuthorizationBack.errorMessage);
           }
         }
@@ -88,7 +94,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <a-modal v-model:open="modal" title="添加密码">
+  <a-modal v-model:open="modal" title="授权认证">
     <label
         class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
     >
@@ -115,9 +121,9 @@ export default defineComponent({
             @click="handleOk()"
         >
           <span class="flex items-center">
-            <MailOutlined v-if="!confirmLoading" class="pe-1"/>
+            <SendOutlined v-if="!confirmLoading" class="pe-1"/>
             <LoadingOutlined v-else class="pe-1"/>
-            <span>添加</span>
+            <span>授权</span>
           </span>
         </button>
       </div>

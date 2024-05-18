@@ -62,7 +62,7 @@ export default defineComponent({
         message.warn('删除信息不能为空');
       }
       this.confirmLoading = true;
-      const returnData = await delPasswordApi(this.delPasswordUuid.id, null);
+      const returnData = await delPasswordApi(this.delPasswordUuid.id, this.authorizationCode);
       if (returnData.output === "Success") {
         message.success('删除成功');
         this.confirmLoading = false;
@@ -101,22 +101,29 @@ export default defineComponent({
     authorizationCode: {
       handler: async function (value) {
         if (value !== "") {
-          const returnData = await delPasswordApi(this.delPasswordUuid.id, value);
+          this.authorizationModal = false;
+          const returnData = await delPasswordApi(this.delPasswordUuid.id, this.authorizationCode);
           if (returnData.output === "Success") {
             message.success('删除成功');
             this.confirmLoading = false;
             this.modal = false;
             this.$emit('delPassword', true);
           } else {
-            message.error(returnData.errorMessage);
-            this.confirmLoading = false;
-            this.$emit('delPassword', false);
+            if (returnData.output === "NeedReAuthentication") {
+              this.confirmLoading = false;
+              this.modal = false;
+              this.authorizationModal = true;
+            } else {
+              message.error(returnData.errorMessage);
+              this.confirmLoading = false;
+              this.$emit('delPassword', false);
+            }
           }
         }
       },
       immediate: true
     },
-    modal(val) {
+    async modal(val) {
       this.$emit('updateModal', val);
     }
   },
@@ -158,6 +165,7 @@ export default defineComponent({
   </a-modal>
   <DashboardAuthorization
       :show-modal="authorizationModal"
+      @update-modal="(newValue) => authorizationModal = newValue"
       @authorization="(newValue) => authorizationCode = newValue"
   />
 </template>
